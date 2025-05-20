@@ -1,0 +1,164 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+// Class to represent a Course
+class Course {
+    private String courseName;
+    private String courseCode;
+    private List<Assessment> assessments;
+    
+    public Course(String courseName, String courseCode) {
+        this.courseName = courseName;
+        this.courseCode = courseCode;
+        this.assessments = new ArrayList<>();
+    }
+    public void addAssessment(Assessment assessment) {
+        assessments.add(assessment);
+    }
+    public void displayCourseInfo() {
+        System.out.println("Course Name: " + courseName);
+        System.out.println("Course Code: " + courseCode);
+        System.out.println("Assessments:");
+        for (Assessment assessment : assessments) {
+            assessment.displayAssessmentInfo();
+        }
+    }
+    public String getCourseCode() {
+        return courseCode;
+    }
+}
+// Class to represent an Assessment
+class Assessment {
+    private String assessmentTitle;
+    private String description;
+    private String dueDate;
+    
+    public Assessment(String assessmentTitle, String description, String dueDate) {
+        this.assessmentTitle = assessmentTitle;
+        this.description = description;
+        this.dueDate = dueDate;
+    }
+    
+    public void displayAssessmentInfo() {
+        System.out.println("Assessment Title: " + assessmentTitle);
+        System.out.println("Description: " + description);
+        System.out.println("Due Date: " + dueDate);
+    }
+}
+// Class to represent Feedback given by students
+class Feedback {
+    private String studentName;
+    private String feedbackText;
+    public Feedback(String studentName, String feedbackText) {
+        this.studentName = studentName;
+        this.feedbackText = feedbackText;
+    }
+    public void displayFeedback() {
+        System.out.println("Student: " + studentName);
+        System.out.println("Feedback: " + feedbackText);
+    }
+}
+// Main School Management System Class
+public class SchoolManagement {
+    private List<Course> courses;
+    
+    public SchoolManagementSystem() {
+        this.courses = new ArrayList<>();
+    }
+    // Method to upload a new course
+    public void uploadCourse(String courseName, String courseCode) {
+        Course course = new Course(courseName, courseCode);
+        courses.add(course);
+        System.out.println("Course " + courseName + " uploaded successfully.");
+    }
+    // Method to add an assessment to a course
+    public void addAssessmentToCourse(String courseCode, String assessmentTitle, String description, String dueDate) {
+        for (Course course : courses) {
+            if (course.getCourseCode().equals(courseCode)) {
+                Assessment assessment = new Assessment(assessmentTitle, description, dueDate);
+                course.addAssessment(assessment);
+                System.out.println("Assessment added successfully to the course: " + courseCode);
+                return;
+            }
+        }
+        System.out.println("Course with code " + courseCode + " not found.");
+    }
+    // Method to add feedback for a course
+    public void addFeedbackToCourse(String courseCode, String studentName, String feedbackText) {
+        for (Course course : courses) {
+            if (course.getCourseCode().equals(courseCode)) {
+                Feedback feedback = new Feedback(studentName, feedbackText);
+                System.out.println("Feedback for course " + courseCode + ":");
+                feedback.displayFeedback();
+                return;
+            }
+        }
+        System.out.println("Course with code " + courseCode + " not found.");
+    }
+    // Method to display all courses and their information
+    public void displayAllCourses() {
+        if (courses.isEmpty()) {
+            System.out.println("No courses available.");
+            return;
+        }
+        for (Course course : courses) {
+            course.displayCourseInfo();
+        }
+    }
+    // Main function to interact with the system
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        SchoolManagementSystem sms = new SchoolManagementSystem();
+        
+        while (true) {
+            System.out.println("\nSchool Management System");
+            System.out.println("1. Upload Course");
+            System.out.println("2. Add Assessment to Course");
+            System.out.println("3. Add Feedback for Course");
+            System.out.println("4. View All Courses");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // consume newline character
+            
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter Course Name: ");
+                    String courseName = scanner.nextLine();
+                    System.out.print("Enter Course Code: ");
+                    String courseCode = scanner.nextLine();
+                    sms.uploadCourse(courseName, courseCode);
+                    break;
+                case 2:
+                    System.out.print("Enter Course Code: ");
+                    String cCodeForAssessment = scanner.nextLine();
+                    System.out.print("Enter Assessment Title: ");
+                    String assessmentTitle = scanner.nextLine();
+                    System.out.print("Enter Assessment Description: ");
+                    String description = scanner.nextLine();
+                    System.out.print("Enter Assessment Due Date: ");
+                    String dueDate = scanner.nextLine();
+                    sms.addAssessmentToCourse(cCodeForAssessment, assessmentTitle, description, dueDate);
+                    break;
+                case 3:
+                    System.out.print("Enter Course Code: ");
+                    String cCodeForFeedback = scanner.nextLine();
+                    System.out.print("Enter Student Name: ");
+                    String studentName = scanner.nextLine();
+                    System.out.print("Enter Feedback Text: ");
+                    String feedbackText = scanner.nextLine();
+                    sms.addFeedbackToCourse(cCodeForFeedback, studentName, feedbackText);
+                    break;
+                case 4:
+                    sms.displayAllCourses();
+                    break;
+                case 5:
+                    System.out.println("Exiting the system...");
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+}
